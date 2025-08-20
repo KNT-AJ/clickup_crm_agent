@@ -1,0 +1,27 @@
+{
+  "name": "clickup-mcp-agent",
+  "version": "1.0.0",
+  "description": "Repository for using AI agents with ClickUp MCP",
+  "main": "index.js",
+  "scripts": {
+    "setup": "echo 'Setting up ClickUp MCP environment...' && npm install",
+    "start-mcp": "npx -y @modelcontextprotocol/server-clickup",
+    "test-connection": "node -e \"console.log('Testing ClickUp MCP connection...')\""
+  },
+  "keywords": [
+    "clickup",
+    "mcp",
+    "ai",
+    "agent",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/server-clickup": "latest"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
