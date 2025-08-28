@@ -1,0 +1,10 @@
+# Cursor Rules: Persistent Context
+
+# Include these files in the agent's context by default
+include:
+  - AGENT_INSTRUCTIONS.md
+  - docs/clickup_api/**/*.md
+
+# Optional: Bias the agent to read local docs before external web
+hints:
+  - Prefer local offline docs in docs/clickup_api before web search

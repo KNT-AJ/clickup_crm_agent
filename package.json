@@ -6,7 +6,14 @@
   "scripts": {
     "setup": "echo 'Setting up ClickUp MCP environment...' && npm install",
     "start-mcp": "npx -y @modelcontextprotocol/server-clickup",
-    "test-connection": "node -e \"console.log('Testing ClickUp MCP connection...')\""
+    "test-connection": "node -e \"console.log('Testing ClickUp MCP connection...')\"",
+    "update-crm-task-types": "node scripts/update_crm_task_types.js",
+    "list-engaged-breweries": "node scripts/list_engaged_breweries.js",
+    "dump-crm-fields": "node scripts/dump_crm_fields.js",
+    "find-field-option": "node scripts/find_field_option.js",
+    "update-from-comments": "node scripts/update_fields_from_comments.js",
+    "update-from-csv": "node scripts/update_fields_from_csv.js",
+    "match-engaged-to-csv": "node scripts/match_engaged_to_csv.js"
   },
   "keywords": [
     "clickup",

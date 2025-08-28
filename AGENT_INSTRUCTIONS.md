@@ -24,7 +24,7 @@ You are an AI agent configured to help manage ClickUp workspaces primarily throu
 - **Rate Limits**: 100 requests/minute (Free/Unlimited/Business), 1,000/min (Business Plus), 10,000/min (Enterprise)
 
 ## 📋 Important List IDs
-- **CRM List ID**: `901106214760` - Use this when "CRM" is mentioned in any context
+- **CRM List ID**: `901106214760` - Use this when "CRM" is mentioned in any context. This CRM list tracks brewery accounts; when asked for "breweries with Engaged status", fetch all tasks in this list with status `engaged` without applying name/tag heuristics.
 
 ## 📋 Core Capabilities
 
@@ -64,12 +64,35 @@ You are an AI agent configured to help manage ClickUp workspaces primarily throu
 2. **Use bulk operations** for efficiency when handling multiple tasks
 3. **Preserve important information** when moving tasks
 4. **Add context** through comments when needed
+5. **Enrich from comments (CRM)**: When working with CRM records, parse task comments for labeled contact details and update custom fields accordingly (see below).
 
 ### When Searching/Querying
 1. **Use specific filters** to narrow results
 2. **Leverage tags** for cross-list organization
 3. **Consider date ranges** for time-sensitive queries
 4. **Include subtasks** when full context is needed
+5. **For Engaged breweries**: In the CRM list, treat all tasks as brewery records; query by `status=engaged` only. Do NOT use string heuristics like checking for "brew" in names or tags unless explicitly requested.
+
+### CRM Data Enrichment
+- **Source**: `GET /task/{task_id}/comment` rich text. Flatten segments to plain text.
+- **Extract**: Labeled lines: `Name:`, `Email:`, `Phone:`, `Phone Number:`, `Mobile:`, `Title:`, `Role:`.
+- **Map** to fields:
+  - Name → `Contact (Main)` (fallback: `Contact`, `Contact 1`)
+  - Email → `Contact (Main) Email` (fallback: `Contact 1 Email`, `Contact 2/3/4 Email`)
+  - Phone → `Contact (Main) Phone Number` (fallback: `Contact 1/2/3/4 Phone`)
+  - Title/Role → `Contact (Main) Title` (fallback: `Contact Title`, `Contact 1 Title`)
+- **Phone format**: Convert to E.164 for US numbers (`+1##########`). Skip non-US/invalid formats unless user confirms region.
+- **Update policy**: Do not overwrite non-empty fields unless explicitly asked (or `--overwrite` provided).
+
+### CSV Enrichment (Brewery Dataset)
+- **Dataset**: `data/brewery_data.csv`
+- **Match**: Normalize names (remove punctuation, common suffixes) and match Engaged task name to CSV “Company Name” by exact/coverage (no generic token-only matches).
+- **Map** to fields when empty:
+  - Address/City/State/ZIP → `Address`, `City`, `State`, `ZIP Code`
+  - Website/Social → `Company_Website`, `Twitter`, `LinkedIn`, `Facebook` (URL fields)
+  - Phone → `Contact (Main) Phone Number` from CSV “Phone Number Combined” (US E.164 only)
+  - Employees → `Employee Count` bucketed to `0-25`, `26-100`, or `101+` from CSV actual/range
+- **Safety**: Only fill empty fields by default; never downgrade populated fields without confirmation.
 
 ## 🚀 Common Workflows
 
@@ -77,6 +100,10 @@ You are an AI agent configured to help manage ClickUp workspaces primarily throu
 ```
 "Create a new CRM task called 'Follow up with client ABC' in the CRM list"
 ```
+
+#### Engaged Breweries Retrieval (non-heuristic)
+- Use direct API: `GET /list/{CRM_LIST_ID}/task?statuses[]=engaged&subtasks=true`
+- Return all tasks; do not filter by name/tags unless requested
 
 ### Sprint Planning
 ```

@@ -64,8 +64,27 @@ clickup_mcp_agent/
 ├── config.env          # API configuration (gitignored)
 ├── .gitignore          # Prevents sensitive files from being committed
 ├── README.md           # This file
+├── docs/
+│   └── clickup_api/    # Offline ClickUp API reference (curated)
 └── setup/              # Additional setup files (if needed)
 ```
+
+## 📚 Offline ClickUp API reference
+
+For quick, offline reference to common ClickUp API topics (auth, rate limits, tasks, webhooks, filters, comments, custom fields, attachments, goals, timezones, FAQs), see:
+
+- docs/clickup_api/README.md
+
+These pages summarize the official docs and include source links. For the latest canonical documentation, visit https://developer.clickup.com/.
+
+## 🧠 Persistent context for agents
+
+This repo includes preferences for AI assistants to always include key files in context:
+
+- `AGENT_INSTRUCTIONS.md`
+- `docs/clickup_api/**/*.md`
+
+If you're using Cursor, see `.cursorrules`. For other tools, check `.github/copilot-instructions.md` and configure equivalent settings in your IDE.
 
 ## 🔒 Security
 
@@ -108,6 +127,26 @@ clickup_mcp_agent/
 ```
 "Create 5 tasks for the sprint planning meeting: 'Sprint Planning', 'Backlog Grooming', 'Story Pointing', 'Sprint Goal Setting', 'Team Retrospective'"
 ```
+
+## 🧩 CRM Scripts
+
+- List Engaged (breweries):
+  - `npm run list-engaged-breweries` (defaults to all Engaged tasks)
+  - JSON output: `npm run list-engaged-breweries -- --json`
+  - Heuristic filter (names/tags/fields): `npm run list-engaged-breweries -- --heuristic`
+  - Exact field/value filter: `npm run list-engaged-breweries -- --field "Industry" --value "Brewery"`
+
+- Enrich Contact Fields From Comments:
+  - Dry run: `npm run update-from-comments -- --dry-run`
+  - Apply updates: `npm run update-from-comments`
+  - Overwrite existing values: `npm run update-from-comments -- --overwrite`
+  - Limit processed tasks: `npm run update-from-comments -- --limit 5`
+
+- Enrich Fields From Brewery CSV:
+  - Preview: `npm run update-from-csv -- --dry-run`
+  - Apply (fills only empty fields): `npm run update-from-csv`
+  - Overwrite existing values: `npm run update-from-csv -- --overwrite`
+  - Limit processed tasks: `npm run update-from-csv -- --limit 5`
 
 ## 🔄 Updates
 
