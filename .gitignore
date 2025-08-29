@@ -60,3 +60,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+\n+# Large datasets kept locally
+data/brewery_data.csv
